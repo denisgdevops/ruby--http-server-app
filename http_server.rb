@@ -22,10 +22,10 @@ loop do
     # Check if the requested path is "/healthcheck"
     if path == "/healthcheck"
       # If the path is "/healthcheck", set a response indicating success
-      client.write("OK")
+      response = "HTTP/1.0 200 OK\r\n\r\nOK"
     else
       # For other paths, set a generic response
-       client.write("Well, hello there!")
+       response = "HTTP/1.0 200 OK\r\n\r\nWell, hello there!"
     end
 
     # Send the response back to the client
