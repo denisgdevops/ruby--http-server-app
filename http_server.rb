@@ -2,30 +2,39 @@
 require 'socket'
 
 # Create a TCP server that listens on all available interfaces (0.0.0.0) and port 8080
-server  = TCPServer.new('0.0.0.0', 80)
-
+server = TCPServer.new('0.0.0.0', 80)
 
 # Infinite loop to continuously accept incoming connections
-loop {
+loop do
+  # Accept a client connection
+  client = server.accept
 
-    # Accept a client connection and read the request
-  client  = server.accept
-  request = client.readpartial(2048)
-  
-  # Parse the first line of the HTTP request to extract method, path, and version
-  method, path, version = request.lines[0].split
+  begin
+    # Read the client's request data, limited to 2048 bytes
+    request = client.readpartial(2048)
 
-   # Print the request information to the console
-  puts "#{method} #{path} #{version}"
+    # Parse the first line of the HTTP request to extract method, path, and version
+    method, path, version = request.lines[0].split
 
-  # If the path is /healthcheck, return a 200 OK response with the body "OK"
-  if path == "/healthcheck"
-    client.write("OK")
-  # If the path is /hello, return a 200 OK response with the body "Well, hello there!"
-  else
-    client.write("Well, hello there!")
+    # Print the request information to the console
+    puts "#{method} #{path} #{version}"
+
+    # Check if the requested path is "/healthcheck"
+    if path == "/healthcheck"
+      # If the path is "/healthcheck", set a response indicating success
+      client.write("OK")
+    else
+      # For other paths, set a generic response
+       client.write("Well, hello there!")
+    end
+
+    # Send the response back to the client
+    client.write(response)
+  rescue EOFError
+    # Handle the case when the client closes the connection
+    puts "Client closed the connection."
+  ensure
+    # Ensure that the client socket is closed, regardless of the outcome
+    client.close
   end
-
-  # Close the client connection
-  client.close
-}
+end
