@@ -1,12 +1,15 @@
 # Require the 'socket' library to work with TCP sockets
 require 'socket'
 
+require 'logger'
+
 # Create a TCP server that listens on all available interfaces (0.0.0.0) and port 8080
 server = TCPServer.new('0.0.0.0', 8080)
 
 # Infinite loop to continuously accept incoming connections
 loop do
 
+  logger.info("ruby application Started successfully....") # Log the response information
   # Accept a connection
   client = server.accept
 
