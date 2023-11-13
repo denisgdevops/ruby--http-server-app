@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/denisgdevops/ruby-http-server-app.git  # Replace with your GitLab repo URL
     targetRevision: HEAD
-    path: plaform/helm # Path to your application's Kubernetes manifests
+    path: platform/helm # Path to your application's Kubernetes manifests
   destination:
     server: https://kubernetes.default.svc  # Minikube Kubernetes API server
     namespace: default  # The target namespace in Minikube
