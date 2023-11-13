@@ -7,6 +7,7 @@ server = TCPServer.new('0.0.0.0', 8080)
 # Infinite loop to continuously accept incoming connections
 loop do
 
+  # Accept a connection
   client = server.accept
 
   begin
