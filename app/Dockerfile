@@ -8,8 +8,9 @@ WORKDIR /app
 COPY Gemfile Gemfile.lock ./
 
 # Install any dependencies
-RUN gem install bundler && bundle install
+RUN gem install bundler
 
+RUN  bundle install
 COPY . /app
 
 
