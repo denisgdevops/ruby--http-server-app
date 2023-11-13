@@ -37,6 +37,7 @@ jobs:
       
       - name: Build and Push Docker image
         run: |
+          cd app
           echo $DOCKER_USERNAME/$PROJECT_NAME:latest
           docker build -t $DOCKER_USERNAME/$PROJECT_NAME:latest .
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
