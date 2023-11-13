@@ -7,22 +7,40 @@ on:
   pull_request:
     branches:
       - main
-
+env:
+  PROJECT_NAME: 'ruby-app-service'
+  DOCKER_USERNAME: 'gikundi'
 jobs:
-  build:
-    name: Docker Image CI
+  scan:
+    name: Image scanning
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Build Docker image
-        run: docker build . --file Dockerfile --tag gikundi/ruby-http-server-app-service:latest
-
-      - name: Push Docker image
+        uses: actions/checkout@v3
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'docker.io/gikundi/ruby-app-service:latest' 
+          format: 'table'
+          exit-code: '0'  # Update this 
+          ignore-unfixed: false
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          
+  build_push:
+    name: Image build and push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Build and Push Docker image
         run: |
+          echo $DOCKER_USERNAME/$PROJECT_NAME:latest
+          docker build -t $DOCKER_USERNAME/$PROJECT_NAME:latest .
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push gikundi/ruby-http-server-app-service:latest
+          docker push $DOCKER_USERNAME/$PROJECT_NAME:latest
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
